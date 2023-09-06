@@ -1,32 +1,34 @@
 import { Link } from "react-router-dom"
 import axios from 'axios'
-import { useState } from "react";
- 
+import { useState, FormEvent, ChangeEvent } from "react";
+
 
 export default function UserLogin() {
-
     const [input, setInput] = useState<any>({
         email: '',
         password: ''
     })
 
+    const [localToken, setLocalToken] = useState<string>('')
+
+
     const login = async () => {
         try {
-            // const options = {
-            //     headers: { 'authorization': 'test-token' }
-            // };
             const res = await axios.post(`http://localhost:3000/api/auth/login`, input)
             if (res.data) {
-                console.log(res.data);
+                localStorage.setItem('token', res.data.responseObj.token)
+                setLocalToken(res.data.responseObj.token)
 
             }
         } catch (error) {
             console.error(error)
+            localStorage.setItem('token', '')
+
         }
     }
 
 
-    function handleChange(e) {
+    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value;
         setInput({
             ...input,
@@ -34,38 +36,59 @@ export default function UserLogin() {
         });
     }
 
-    const submit = (e) => {
+    const submit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        login()
+        await login()
     }
+
     return (
         <main>
             <header>
-
-                <Link to={'/home'}>
-                    <button>all trips</button>
-                </Link>
+                <div id="icon-header">
+                    {<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>}
+                    <Link to={'/'}>
+                        <i id="homeIcon" className="material-icons">home</i>
+                    </Link>
+                </div>
             </header>
-            <form onSubmit={submit}>
+            <div className="page">
 
-                <label>
-                    email
-                    <input name="email"
-                        value={input.email}
-                        onChange={handleChange} >
+                <form onSubmit={submit}>
+                    <label>
+                        email
+                        <input name="email"
+                            value={input.email}
+                            onChange={handleChange} >
 
-                    </input>
-                </label>
-                <label>
-                    password
-                    <input name="password"
-                        value={input.password}
-                        onChange={handleChange} >
+                        </input>
+                    </label>
+                    <label>
+                        password
+                        <input name="password"
+                            value={input.password}
+                            onChange={handleChange} >
 
-                    </input>
-                </label>
-                <button type="submit">submit</button>
-            </form>
+                        </input>
+                    </label>
+                    <button type="submit" className="buttons">Log in</button>
+                </form>
+                {!localToken ? (
+                    <p></p>
+                ) : (
+                    <div className="approval">
+                        <h1>your token:</h1>
+                        <h3>{localToken}</h3>
+                        <Link to={'/trips'}>
+                            <button>All trips</button>
+                        </Link>
+                    </div>
+                )}
+            </div>
+            <footer>
+                <h2>
+                    בניית אתרים: דודי 0533114605
+                </h2>
+            </footer>
         </main >
     )
 }

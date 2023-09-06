@@ -1,36 +1,26 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 
-interface FlagsContextType {
-    homeFlag: boolean;
-    setHomeFlag: React.Dispatch<React.SetStateAction<boolean>>;
-    allTripsFlag: boolean;
-    setAllTripsFlag: React.Dispatch<React.SetStateAction<boolean>>;
-    loginFlag:boolean
-    setLoginFlag:React.Dispatch<React.SetStateAction<boolean>>;
-    registrationFlag:boolean
-    setRegistrationFlag:React.Dispatch<React.SetStateAction<boolean>>;
+interface TokenContextType {
+    token: string;
+    setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
-interface FlagsContextProviderProps {
+interface TokenContextProviderProps {
     children: React.ReactNode;
 }
 
 
-export const FlagsContext = createContext<FlagsContextType | null>(null);
+export const TokenContext = createContext<TokenContextType | null>(null);
 
-const FlagsContextProvider: React.FC<FlagsContextProviderProps> = (props) => {
+const TokenContextProvider: React.FC<TokenContextProviderProps> = (props) => {
 
-    const [homeFlag, setHomeFlag] = useState<boolean>(true);
-    const [allTripsFlag, setAllTripsFlag] = useState<boolean>(false);
-    const [loginFlag, setLoginFlag] = useState<boolean>(false)
-    const [registrationFlag, setRegistrationFlag] = useState<boolean>(false)
-
+    const [token, setToken] = useState<string>('');
 
     return (
-        <FlagsContext.Provider value={{ homeFlag, setHomeFlag, allTripsFlag, setAllTripsFlag, loginFlag, setLoginFlag, registrationFlag, setRegistrationFlag}}>
+        <TokenContext.Provider value={{ token, setToken }}>
             {props.children}
-        </FlagsContext.Provider>
+        </TokenContext.Provider>
     );
 };
-export default FlagsContextProvider;
+export default TokenContextProvider;

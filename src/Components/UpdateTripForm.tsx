@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState} from 'react'
+import { useState, FormEvent, ChangeEvent } from 'react'
 import { Trip } from "./interface/interfaceTrip"
 import axios from 'axios'
 import { useParams } from "react-router-dom"
@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom"
 
 export default function UpdateTripForm() {
 
-    // const [trip, setTrip] = useState<Trip | null>(null)
     const [input, setInput] = useState<Trip>({
         id: '',
         name: '',
@@ -16,7 +15,7 @@ export default function UpdateTripForm() {
         startDate: '',
         endDate: '',
         description: '',
-        price: 0,
+        price: null,
         image: '',
         activities: []
     })
@@ -28,11 +27,10 @@ export default function UpdateTripForm() {
     const changeTrip = async () => {
         try {
             const options = {
-                headers: { 'authorization': 'test-token' }
+                headers: { 'authorization': localStorage.getItem('token') }
             };
             const res = await axios.put(`http://localhost:3000/api/trips/${id}`, input, options)
             if (res.data) {
-                // setTrip(res.data)
                 getTripById(res.data.id)
             }
         } catch (error) {
@@ -40,7 +38,7 @@ export default function UpdateTripForm() {
         }
     }
 
-    function handleChange(e) {
+    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const value = e.target.value;
         setInput({
             ...input,
@@ -52,7 +50,7 @@ export default function UpdateTripForm() {
     const getTripById = (id: string) => {
         navigate(`/tripDetail/${id}`);
     }
-    const submit = (e) => {
+    const submit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         changeTrip()
     }
@@ -60,68 +58,72 @@ export default function UpdateTripForm() {
     return (
         <main>
             <header>
+            <div id="icon-header">
+                    {<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>}
+                    <Link to={'/'}>
+                        <i id="homeIcon" className="material-icons">home</i>
+                    </Link>
+                </div>
                 <Link to={'/trips'}>
-                    <button>all trips</button>
+                    <button>All trips</button>
                 </Link>
             </header>
+            <div className="page">
 
-            <form onSubmit={submit}>
-                <h3>update</h3>
-                <label>
-                    id
-                    <input
-                        name="id"
-                        value={input.id}
-                        onChange={handleChange} >
-                    </input>
-                </label>
-                <label>
-                    name
-                    <input name="name"
-                        value={input.name}
-                        onChange={handleChange} >
+                <form onSubmit={submit}>
+                    <h3 className="titles">update</h3>
+                    <label>
+                        name
+                        <input name="name"
+                            value={input.name}
+                            onChange={handleChange} >
 
-                    </input>
-                </label>
-                <label>
-                    startDate
-                    <input name="startDate"
-                        value={input.startDate}
-                        onChange={handleChange}></input>
-                </label>
-                <label>
-                    endDate
-                    <input name="endDate"
-                        value={input.endDate}
-                        onChange={handleChange}></input>
-                </label>
-                <label>
-                    description
-                    <input name="destination"
-                        value={input.destination}
-                        onChange={handleChange}></input>
-                </label>
-                <label>
-                    price
-                    <input name="price"
-                        value={input.price}
-                        onChange={handleChange}></input>
-                </label>
-                <label>
-                    image
-                    <input name="image"
-                        value={input.image}
-                        onChange={handleChange}></input>
-                </label>
-                <label>
-                    activities
-                    <input name="activities"
-                        value={input.activities}
-                        onChange={handleChange}></input>
-                </label>
-                <button type="submit">submit</button>
-            </form>
-
+                        </input>
+                    </label>
+                    <label>
+                        startDate
+                        <input name="startDate"
+                            value={input.startDate}
+                            onChange={handleChange}></input>
+                    </label>
+                    <label>
+                        endDate
+                        <input name="endDate"
+                            value={input.endDate}
+                            onChange={handleChange}></input>
+                    </label>
+                    <label>
+                        description
+                        <input name="destination"
+                            value={input.destination}
+                            onChange={handleChange}></input>
+                    </label>
+                    <label>
+                        price
+                        <input name="price"
+                            value={input.price}
+                            onChange={handleChange}></input>
+                    </label>
+                    <label>
+                        image
+                        <input name="image"
+                            value={input.image}
+                            onChange={handleChange}></input>
+                    </label>
+                    <label>
+                        activities
+                        <input name="activities"
+                            value={input.activities}
+                            onChange={handleChange}></input>
+                    </label>
+                    <button type="submit" className="buttons">submit</button>
+                </form>
+            </div>
+            <footer>
+                <h2>
+                    בניית אתרים: דודי 0533114605
+                </h2>
+            </footer>
         </main>
     )
 }

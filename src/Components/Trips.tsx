@@ -28,17 +28,29 @@ export default function AllTrips() {
         navigate(`/tripDetail/${id}`);
     }
 
+    const addTrip = () => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            navigate('/negation')
+        } else {
+            navigate('/newTrip')
+        }
+    }
     return (
         <main>
             <header>
-                <Link to={'/home'}>
-                    <button>עמוד בית</button>
-                </Link>
-                <Link to={'/newTrip'}>
-                    <button>יצירת טיול חדש</button>
-                </Link>
-            </header>
+                <div id="icon-header">
+                    {<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>}
+                    <Link to={'/'}>
+                        <i id="homeIcon" className="material-icons">home</i>
+                    </Link>
 
+                    <i id="addIcon" className="material-icons" onClick={() => { addTrip() }}>add_circle_outline</i>
+
+                </div>
+            </header>
+            <div className="page">
+                    
             <div id="cards">
                 {trips === null ? (
                     <p></p>
@@ -47,13 +59,19 @@ export default function AllTrips() {
                         return (
                             <div id="tripCard" key={trip.id} onClick={() => getTripById(trip.id)}>
                                 <img src={trip.image} />
-                                <h4>name: {trip.name}</h4>
-                                {/* <button onClick={() => { }}>delete</button> */}
+                                <hr></hr>
+                                <h3>{trip.name}</h3>
                             </div>
                         );
                     })
                 )}
+                    </div>
             </div>
+            <footer>
+                <h2>
+                    בניית אתרים: דודי 0533114605
+                </h2>
+            </footer>
         </main>
     )
 }

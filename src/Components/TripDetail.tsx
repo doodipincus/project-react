@@ -7,6 +7,7 @@ import axios from 'axios'
 
 export default function TripDetail() {
 
+
     const [trip, setTrip] = useState<Trip | null>(null)
     const { id } = useParams()
     const navigate = useNavigate();
@@ -18,7 +19,6 @@ export default function TripDetail() {
             if (res.data) {
                 const tripsFromServer: Trip = res.data
                 setTrip(tripsFromServer)
-
             }
         } catch (error) {
             console.error(error)
@@ -26,9 +26,10 @@ export default function TripDetail() {
     }
 
     const deleteTripFromServer = async () => {
+
         try {
             const options = {
-                headers: { 'authorization': 'test-token' }
+                headers: { 'authorization': localStorage.getItem('token') }
             };
             const res = await axios.delete(`http://localhost:3000/api/trips/${id}`, options)
 
@@ -45,36 +46,78 @@ export default function TripDetail() {
     }, [])
 
     const updateTrip = () => {
-        navigate(`/update/${id}`);
+        const token = localStorage.getItem('token')
+        if (!token) {
+            navigate('/negation')
+        } else {
+            navigate(`/update/${id}`);
+        }
     }
 
     const deleteTrip = () => {
-        deleteTripFromServer()
+        const token = localStorage.getItem('token')
+        if (!token) {
+            navigate('/negation')
+        } else {
+            if (confirm("Delete trip?") === true) deleteTripFromServer()
+        }
     }
 
     return (
         <main>
             <header>
+            <div id="icon-header">
+                    {<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>}
+                    <Link to={'/'}>
+                        <i id="homeIcon" className="material-icons">home</i>
+                    </Link>
+                </div>
                 <Link to={'/trips'}>
-                    <button>all trips</button>
+                    <button>All trips</button>
                 </Link>
             </header>
             {trip === null ? (
                 <p></p>
             ) : (
-                <div id="tripCard" key={trip.id}>
-                    <img src={trip.image} />
-                    <p>destination: {trip.destination}</p>
-                    <p>endDate: {trip.endDate}</p>
-                    <p>id: {trip.id}</p>
-                    <p>name: {trip.name}</p>
-                    <p>startDate: {trip.startDate}</p>
-                    <button onClick={() => { deleteTrip() }}>delete</button>
+                <div className="page">
+                    <div id="onlyTripCard" key={trip.id}>
 
-                    <button onClick={() => updateTrip()}>update trip</button>
+                        <img id={trip.id === '4' ? 'ingOnlyCard4' : "imgOnlyCard"} src={trip.image} />
+                        <div>
+                            <h4>destination</h4>
+                            <p>{trip.destination}</p>
 
+                            <h4>name</h4>
+                            <p>{trip.name}</p>
+
+                            <h4>startDate</h4>
+                            <p>{trip.startDate}</p>
+
+                            <h4>endDate</h4>
+                            <p>{trip.endDate}</p>
+
+                            <h4>activities</h4>
+                            <p>{trip.activities.join(", ")}</p>
+
+                            <h4>id</h4>
+                            <p>{trip.id}</p>
+
+                            <hr></hr>
+
+                            <div id="icons">
+                                {<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>}
+                                <i id="deleteIcon" className="material-icons" onClick={() => { deleteTrip() }}>delete</i>
+                                <i id="editIcon" className="material-icons" onClick={() => updateTrip()}>edit</i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
+            <footer>
+                <h2>
+                    בניית אתרים: דודי 0533114605
+                </h2>
+            </footer>
         </main>
     )
 }
